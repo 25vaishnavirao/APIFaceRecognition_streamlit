@@ -60,10 +60,10 @@ jobs:
         run: unzip release.zip
 
       
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
         with:
-          app-name: APIFaceRecognition
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
-         
+          app-name: 'APIFaceRecognition'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_46FD087F61EB4CB5AA9F6636F22EF2D5 }}
