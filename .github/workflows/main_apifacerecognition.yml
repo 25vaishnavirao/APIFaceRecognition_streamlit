@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'APIFaceRecognition'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E917E9A570E7489596197FAC27AD806A }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B07BB717ED9B4605A847274E9105411D }}
