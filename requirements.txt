@@ -7,4 +7,5 @@ gunicorn
 onnxruntime==1.22.0
 keyboard==0.13.5
 streamlit
-
+pandas
+opencv-python-headless
