@@ -281,7 +281,7 @@ class FaceRecognizer:
             #     break
 
         video_stream.stop()
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
         logger.info("Session ended. Recognized: %s", persons)
 
     
