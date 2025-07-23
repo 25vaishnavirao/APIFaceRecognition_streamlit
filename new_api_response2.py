@@ -191,11 +191,11 @@ class FaceRecognizer:
         try:
             if self.log_dir:
                 os.makedirs(self.log_dir, exist_ok=True)
-            timestamp_folder = datetime.now().strftime("Attendance_%d-%m-%Y_%H-%M")
+            timestamp_folder = datetime.now().strftime("Records_%d-%m-%Y_%H-%M")
             self.session_folder = os.path.join(self.log_dir, timestamp_folder)
             os.makedirs(os.path.join(self.session_folder, "Recognized_images"), exist_ok=True)
             session_id = datetime.now().strftime('%Y%m%d_%H%M%S') + '_' + str(uuid4())[:8]
-            self.file_path = os.path.join(self.session_folder, f"attendance_{session_id}.csv")
+            self.file_path = os.path.join(self.session_folder, f"records_{session_id}.csv")
         except Exception as e:
             logger.error("Error creating CSV file: %s", e)
 
@@ -244,12 +244,6 @@ class FaceRecognizer:
             logger.error("Error writing to attendance file: %s", e)
 
     def recognition_worker(self, ip, stop_event):
-        """
-        Main loop to perform live face detection and recognition from a video stream.
-        
-        Args:
-            ip: Camera source URL or device index.
-        """
         persons = []
         video_stream = VideoStream(int(ip)) if str(ip).isdigit() else VideoStream(ip)
         logger.info("Camera started: %s", ip)
@@ -266,8 +260,12 @@ class FaceRecognizer:
             prev_time = current_time
 
             detected_faces = self.get_face_embedding(frame)
+            # print(f"[DEBUG] Faces Detected: {len(detected_faces)}")
+
             for embedding, (x, y, w, h) in detected_faces:
-                name, similarity = self.recognize_face(embedding)
+                name, similarity = self.recognize_face(embedding, threshold=0.3)
+                print(f"[DEBUG] Recognized: {name}, Similarity: {similarity:.2f}")
+                
                 if name != "Unknown":
                     color = (0, 255, 0)
                     cv2.rectangle(frame, (x, y), (w, h), color, 2)
@@ -276,15 +274,13 @@ class FaceRecognizer:
                     self.write(name, image_filename, frame)
                     persons.append(name)
 
-            # cv2.imshow("Face Recognition", cv2.resize(frame, (1080, 720)))
+           
+            # cv2.imshow("Recognition", cv2.resize(frame, (800, 600)))
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
 
         video_stream.stop()
-        # cv2.destroyAllWindows()
         logger.info("Session ended. Recognized: %s", persons)
-
-    
 
 
     def recognize(self, ip):  
